@@ -1,0 +1,48 @@
+.inline *{
+    display: inline;
+    padding-left: 5px;
+    text-decoration: none;
+    font-size: 18px;
+}
+.emphasize{
+    color : crimson;
+}
+.black{
+    color : black;
+}
+.mid {
+    text-align: center;
+}
+td{
+    padding-left: 10px;
+    padding-right: 10px;
+}
+
+.singleLine{
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+}
+.table{
+    table-layout: fixed;
+    width:100%;
+}
+.text-ellipsis {
+    display: table;
+    table-layout: fixed;
+    width: 100%;
+    white-space: nowrap;
+}
+.text-ellipsis > * {
+    display: table-cell;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+.right-align{
+    text-align: right;
+}
+.left-align{
+    text-align: left;
+}
