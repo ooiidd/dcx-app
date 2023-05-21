@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?> <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.lgcns.tct.mapper.UsedataMapper">
+
+	<select id="getUseData" parameterType="String" resultType="com.lgcns.tct.dto.UsedataDto">
+        SELECT COUNT(*) AS usage_count
+     		, SUM(use_time) AS usage_minute
+     		, SUM(use_distance) AS usage_meter
+     		, round(SUM(use_distance)/1000*0.232, 1) AS carbon_reduction
+		FROM kickboard_svc.t_svc_use
+		WHERE 1=1
+		AND user_no=#{user_no} 
+		AND DATE(use_start_dt)>=#{start_dt}
+    </select>
+
+	<select id="getUsedList" parameterType="String" resultType="com.lgcns.tct.dto.UsedListDto">
+		SELECT U.use_no use_no,max(use_distance) use_distance,abs(TIMESTAMPDIFF(MINUTE, max(use_end_dt), max(use_start_dt))) use_time,
+	DATE_FORMAT(max(use_start_dt),'%Y-%m-%d %H:%i:%s') use_start_dt,
+	DATE_FORMAT(max(use_end_dt),'%Y-%m-%d %H:%i:%s') use_end_dt,
+	DATE_FORMAT(max(pay_datetime),'%Y-%m-%d %H:%i:%s') pay_datetime,
+	cast(ifnull(GROUP_CONCAT(if(paymethod_code = 'C', pay_cost,null)),0) AS SIGNED integer) AS card_pay,
+	cast(ifnull(GROUP_CONCAT(if(paymethod_code = 'P', pay_cost,null)),0) AS SIGNED integer) AS point_pay
+ FROM kickboard_svc.t_svc_use U
+left JOIN kickboard_svc.t_svc_use_pay P ON U.USE_NO = P.USE_NO
+left outer JOIN kickboard_svc.t_point_pay POINT ON POINT.SVC_USE_PAY_NO = P.SVC_USE_PAY_NO
+where U.USER_NO = #{user_no}
+	and DATE(use_start_dt) >= #{start_dt}
+GROUP BY use_no;
+    </select>
+	
+</mapper>
